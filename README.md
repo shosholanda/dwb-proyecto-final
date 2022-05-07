@@ -1,0 +1,2 @@
+# dwb-proyecto-final
+Proyecto final del seminario desarrollo web backend que implementa una API de facturas a clientes. Durante el curso se han desarrollado un par de APIs para gestionar la informaci ́on de clientes y productos. Asimismo, se ha implementado la estructura de la arquitectura de microservicios. En este proyecto se implementar ́an funcionalidades faltantes de una API que administra la informaci ́on de facturas de clientes cuando compran productos.
