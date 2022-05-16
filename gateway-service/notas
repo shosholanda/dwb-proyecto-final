@@ -1,0 +1,64 @@
+NOtas:
+
+Como los demas, creamos este proyecto desde spring.initializer y añadimos las dependencias:
+
+1. config cloud
+2. eureka discovery client
+3. gateway.
+
+Inmediatamente después de importarlo, nos vamos al main y añadimos la anotación @EnableEurekaClient para 
+poder monitorizarlo también.
+
+Luego, debemos modificar la configuración del properties. creamos un archivo en config-data/api/gateway-service.yml
+añadimos la siguiente información del puerto:
+
+1. decimos en que puerto va a correr este servicio y como es monitorizado por eureka client debemos 
+server:
+  port: 8080
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8099/eureka
+      
+2.  El primero se para decir que se encuentra activa el gateway.
+Luego debemos de redireccionar del gateway a los endpoints de cada api en routes mediante 
+
+id = config-data/api/<nombre de la api>
+uri = lb(this.uri)//<nombre de la api>
+predicates = los endpoints a los cuales podemos acceder. con ** decimos todo lo que siga después.
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: customer-service
+        uri: lb://customer-service
+        predicates:
+        - Path=/region/**, /customer/**, /customer-img/**
+        
+hacemos lo mismo para las demás apis. y lo guardamos en el config-data/api/gateway-service.yml
+actualizamos el git
+luego al igual que todo, el properties lo enlazamos con el config-data utilizando
+
+spring.application.name=gateway-service
+spring.config.import=configserver:http://root:1234@localhost:8888/
+
+
+Finalmente probamos nuestro gateway service con postman . Levantamos las aplicaciones en el siguiente orden
+
+config-service
+registry-service
+gateway-service
+customer -> api a probar.
+
+Ahora las peticiones de la api no las haremos a través del puerto 8081 para customer, sino 8080. Cambiamos el
+endpoint de las peticiones de customer en postman y ver que pueda seguir leyendo la información.
+
+
+nota: también se puede seguir accediendo desde el puerto 8081 (anterior). debería ser posible?
+
+

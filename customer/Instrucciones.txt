@@ -1,0 +1,24 @@
+INSTRUCCIONES DE CREACIÓN DE API.
+ * Crear el proyecto de spring desde la página
+ * https://start.spring.io/
+ * Dejar solo el com en grupo, y cambiar artifact y name, descripción también. 
+ * Añadir las dependencias DEV tools y WEB
+ * Descargar el archivo generado y descomprimirlo en una carpeta de la pc.
+ * Abrir este IDE y dar click en: Archivo > Importar > Existing Maven Proyect > Ruta de la carpeta
+ * Una vez que lo reconozca le damos OK
+ * Esperar a que termine de descargar algunos archivos.
+ * 
+ * Una vez abierto el proyecto, dar la estructura de paquetes convencional.
+ * Crear 3 paquetes:
+ * 	1. En com.<nombre>.api
+ *  2. En com.<nombre>.configuration
+ *  3. En com.<nombre>.exception 
+ *  
+ * Dentro del paquete api, crear los siguientes paquetes:
+ * 	1. entity
+ * 	2. controller
+ *  3. repository
+ *  4. service
+ *  5. dto
+ *  
+ * Seguir con el archivo que se encuentra en src/main/java/com.customer.api.entity.Region.java

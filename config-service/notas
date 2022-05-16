@@ -1,0 +1,108 @@
+NOtas:
+
+Para crear un config-service que proteja a los microservicios o las apis, debemos
+crear un nuevo proyecto desde spring inizialiter y agregar las dependencias:
+
+1. Config Server -> Para que las configuraciones apunten a un git y no a los locales.
+2. Spring Security -> Para que no cualquier api pueda ser accedida mediante un sistema de log in. 
+
+Lo primero es ir a src/main/java/com.configservice ConfigServiceApplication y agregar la notación
+@EnableConfigServer
+
+que se utilizar para crear un servidor de configuración que pueda comunicarse con otras aplicaciones.
+Es decir que con esta anotación decimos que esta clase /proyecto es la configuración de nuestras apis (todas las demás) 
+
+Luego, creamos una carpeta aparte config-data/api/ que tenga los application.properties de cada api desarrollada (la que tiene los datos 
+a la conexión de la bdd). Cada archivo con el nombre de <api>-service.properties.
+
+Una vez copiados los datos, tenemos que conectar la carpeta con el repositorio de git hub, entonces
+creamos un nuevo repo desde la página de github que se llame igual config-data.
+
+una vezc reado, nos paramos en la carpeta que acabamos de crear /config-data/ y ponemos los siguientes comandos.
+
+git init
+git remote add origin <link del repo>
+
+añadimos la carpeta con 
+git add .
+git commit -m "msg" -> necesitamos haber configurado el git config --global user.emal user.name antes
+
+git push -u origin master -> necesitamos tener el token de acceso 
+
+para mas info, visitar: https://www.codegrepper.com/code-examples/shell/login+to+github+from+terminal
+
+una vez teniendo el repo en la nube, cambiamos el application.properties de config-service a application.yml.
+
+añadimos los siguientes valores:
+
+server.port: 8888 -> normalmente en este puerto corre este servicio. 
+spring.cloud.config.server.git.uri: <liga a nuestro repo de github> y en la misma carpeta:
+							  .search-paths: api -> porque nuestra carpeta está dentro de la carpeta api
+							  .default-label = "master" -> la rama en la que va a buscar. 
+					
+	  .security.user.name: root			-> Definir un login
+	                .password: 1234
+	 
+
+probamos nuestro config-service corriendolo como springbootapp.
+Y ver desde postman que no podemos acceder a nada si no mandamos también los dato de inicio. 
+
+Para añadir la autenticación desde postman, creamos una nueva petición al puerto 8888 y en la pestaña de 
+Authorization > Type: Basic Auth > username : root, password: 1234
+
+Ahora ya no nos da error de autenticación, sino de not found, esto porque no se encuentra nada definido en el endpoint. 
+
+Pero a través de config server podemos acceder a las apis de customer y product escribiendo el nombre de 
+la api que está en config-data/api, por ejemplo customer-service/ en el endpoint
+
+Adicionalmente, debemos definir en el endpoint el ambiente que queremos buscar, es decir como la rama en la que se busca.
+En este caso usaremos default para el ambiente master y nos muestra lo que tiene el archivo de properties. 
+No olvidar que los está leyendo del repo de github, no localmente de los archivos customer ni product
+
+Finalmente debemos redireccionar los aplication.properties de customer y product y que lean la información correspondiente desde el git 
+a través del config-service. Pero para esto hay que añadir unas dependencias.
+
+1. <spring-cloud.version>2021.0.2</spring-cloud.version> -> la versión de spring-cloud de config-service que está después de java-version
+	e insertarla en el customer/pom 
+	
+2. <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	-> dependecyManagement que se encuentra en las dependencias del pom de config-service y pegarlas en el pom de customer después de las dependencias.
+	
+3. 
+<dependency>
+	<groupId> org.springframework.cloud </groupId>
+	<artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+
+copiar al de customer/pom a las dependencias. y ya con estas dependencias se puede conectar el customer al config-service.
+
+Ahora modificamos el archivo de application.properties de las apis. necesitamos saber el nombre al que pertenece y el puerto
+en el que corre el config-service. Utilizamos:
+
+spring.application.name = customer-service -> El nombre del archivo al que va a leer la información
+spring.config.import = configserver: http://localhost:8888/ -> la ruta directa de postman
+
+sin embargo, como se utiliza usuario y contraseña para ingresar al config-service, necesitamos pasar esa información en la ruta.
+
+http://{user}:{password}@localhost:8888/
+
+Adicionalmente, user y password pueden ser variables 
+spring.application.name=customer-service
+spring.config.import=configserver:http://root:password@localhost:8888/
+
+Para probar que funciona realmente, debemos correr el config-service PRIMERO y el customer al mismo tiempo y hacer una consulta en postman de customer
+para ver que efectivamente se esta leyendo la información de config-service y no del application.properties, 
+
+leemos una petición de la api del postman y verificar que todo funcione normalmente.
+

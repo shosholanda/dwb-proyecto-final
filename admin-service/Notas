@@ -1,0 +1,63 @@
+Notas:
+
+Este admin server es para administrar todos los servicios desde un sitio. 
+Creamos el proyecto en sprint.initializer y añadimos las dependencias:
+
+1. Eureka Discovery client
+2. config client
+3. Codecentric's Spring boot admin(server)
+
+Inmediatamente después de importar el proyecto a spring, añadir la anotación en el main @EnableAdminServer
+
+Luego nos falta definir 
+1. definir en que puerto va a correr
+2. que las apis puedan ser monitoriados desde admin service. 
+
+
+creamos una archivo config-data/api/admin-service.yml donde solamente se indique el puerto donde corre (server.port = 8090)
+8090 es el puerto donde usualemente corre el adminservice.
+
+Luego en application.properties lo conectamos al config-data correspondiente con:
+
+spring.application.name=admin-service
+spring.config.import=configserver:http://root:1234@localhost:8888/
+
+luego para el paso 2, debemos de agregar unas dependencia para decir que las apis son clientes también del admin service.
+
+1. la versión de spring boot admin
+
+<spring-boot-admin.version>2.6.5</spring-boot-admin.version>
+
+2. dentro de dependecy management
+
+<dependency>
+				<groupId>de.codecentric</groupId>
+				<artifactId>spring-boot-admin-dependencies</artifactId>
+				<version>${spring-boot-admin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+3. la dependencia-(client)
+
+<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+		</dependency>
+		
+para todas las apis.
+
+Luego debemos de inidcar que las apis son clientes de nuestro adminservice. configuramos sus properties en config-data y añadimos:
+
+spring.boot.admin.client.url=http://localhost:8090 	-> El puerto donde corre el admin
+management.endpoints.web.exposure.include=*			-> ver todos los enpoints
+management.endpoint.health.show-details=always		-> ver todas las métricas.
+
+
+para todas las apis. actualizamos el repo de git. 
+Finalmente para probarlo, vamos a correr todos los servicios en orden
+
+1. config-service
+2. registry-service 
+3. gateway-service
+4. admin-service

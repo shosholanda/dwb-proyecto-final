@@ -1,0 +1,27 @@
+INSTRUCCIONES PARA PODER UTILIZAR POSTMAN Y HACER PETICIONES CORRECTAS.
+
+1. Crear una cuenta en postman y logearse para utilizar la aplicación.
+2. Crear una nueva colección de peticiones a probar.
+2. Ir a Collections > + > Nombre de la colección
+3. Una vez creado, vamos a los tres puntitos que están a la altura de la colección del lado izquierdo, damos click
+	en Add request
+4. Cada add request es una prueba a un endpoint que hayamos definido en nuestro proyecto. En el caso de Región añadiremos un
+	request para cada método con el nombre del método para probarlo. 
+5. Indicar el comando http que se utiliza en el método (GET, READ, DELETE ...)
+6. Añadir la url la cual debería ser en el puerto establecido en application.properties.
+7. http://localhost:8081/region 
+para acceder a los recursos de region (Debe estar levantada la aplicación)
+
+Click en send para ver los paquetes que obtenemos de regreso en formato json.
+
+Si recibe el paremetro de id en el recurso, debemos indicarlo en el mismo url/{region_id}
+
+Para enviar el parametro  objeto region requerido por @Request body lo debemos especificar en la pestaña:
+
+	Body > Raw > Text > JSON
+	
+	Donde escribiremos nuestro texto en formato JSON 
+	
+	Probar todos los endpoints
+	
+lo que sigue es continuar con el archivo se src/main/java/customer/api/repository/repoREgion.java

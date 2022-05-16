@@ -1,0 +1,65 @@
+Notass
+
+1. Esta carpeta corresponde al servidor de eureka. 
+Eureka es una interfaz para poder monitorizar y sacar métricas del consumo de apis.
+Lo primero es crear un nuevo proyecto en spring.initializer con el nombre y con las dependencias de
+
+1. Eureka Server
+2. Config client.
+
+Inmediatamente después de crear el proyecto, debemos añadir la anotación @EnableEurekaServer a nuestro main para activar 
+la configuración de eureka server.
+
+Después vamos a crear un archivo registry-service.yml de texto en config-service/api/ y escribimos la siguiente información importante:
+
+1. el puerto donde va a correr el servidor eureka.
+
+server:
+  port: 8099
+  	
+
+2. El nombre del host
+
+eureka:
+  instance:
+    hostname: localhost  	-> El nombre del host. Usaremos como variable después
+  client:
+    register-with-eureka: false 	-> Hacer que no se pueda monitorizar a sí mismo
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/	-> El endpoint donde va a iniciar el servidor.
+      
+un vez guardado el archivo debemos de actualizar el repo de git con los respectivos git add y commit.
+
+INiciamos el servidor de config-service y probamos con postman una petición get al endpoint tegistry-service/default con auth
+y todo debería funcionar bien. Solo nos falta ligar nuesto application.properties al config-service de la misma foram que hicimos
+con las apis de invoice y customer.
+
+
+Después de conectarlo, ejecutamos el registry-service. Desde el postman si intentamos ingresar al endpoint
+http://localhost:8099/
+nos aparecerá de regreso un html, lo cual significa que es una página web, por lo que lo abrimos en un navegador
+y así  obtenemos la interfaz de usuario de eureka monitorizando las api, si es que las ejecutamos, pero antess
+debemos decirle a las apis que se conecten al eureka server. Entonces hay que añadir más dependencias para poder conectar.
+Debemos especificar 2 cosas. 
+
+1. habilitar que puedan ser monitorieadas por eureka
+2. decir en que puerto serán monitoreadas. 
+
+Nos vamos al pom de las apis y añadimos las dependencias:
+
+1. 
+
+<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		
+Despues nos vamos al main de cada api y añadimos la anotación @EnableEurekaClient con esto ya decimos que las apis
+van a ser monitoreadas. Ahora falta definir en que puerto. Nos vamos a la configuración de las apis en config-data/api/
+y añadimos 	
+
+eureka.client.serviceUrl.defaultZone=http://localhost:8099/eureka
+
+actualizamos el git y ejecutamos primero el config-service, luego registry y al final la api. Nos debe mostrar en la página
+web nuestra api ejecutada.
