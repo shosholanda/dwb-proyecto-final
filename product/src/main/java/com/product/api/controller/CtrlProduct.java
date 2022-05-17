@@ -51,7 +51,7 @@ public class CtrlProduct {
 	 * READ endpoint
 	 */
 	@GetMapping("/{gtin}")
-	public ResponseEntity<Product> getProduct(@PathVariable String gtin) {
+	public ResponseEntity<Product> getProduct(@PathVariable("gtin") String gtin) {
 		return new ResponseEntity<>(srv.getProduct(gtin), HttpStatus.OK);
 	}
 	
