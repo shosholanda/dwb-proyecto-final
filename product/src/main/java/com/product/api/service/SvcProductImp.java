@@ -109,4 +109,18 @@ public class SvcProductImp implements SvcProduct {
 		return new ApiResponse("La categoría del producto fue actualizada!");
 	}
 
+	@Override
+	public ApiResponse updateProductStock(String gtin, Integer stock) {
+		Product p = repo.findByGtinAndStatus(gtin, 1);
+		if (p == null || p.getStatus() == 0) {
+			throw new ApiException("product does not exist", HttpStatus.NOT_FOUND);
+		}
+		try {
+			repo.updateProductStock(gtin, stock);
+		} catch (Exception e) {
+			throw new ApiException("Algo salió mal :( más info:\n"+  e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return new ApiResponse("product stock updated!");
+	}
+
 }

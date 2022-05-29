@@ -58,8 +58,24 @@ public class SvcCartImp implements SvcCart {
 		/*
 		 * Sprint 2 - Requerimiento 3
 		 * Validar si el producto ya había sido agregado al carrito para solo actualizar su cantidad
+		 * *CHECK*
 		 */
+		List<Cart> list = getCart(cart.getRfc());
+		boolean updated = false;
+		for (Cart i : list) {
+			if (cart.getGtin().equals(i.getGtin())) {
+				updated = true;
+				int total = cart.getQuantity() + i.getQuantity();
+				cart.setQuantity(total);
+				repo.updateQuantity(cart.getRfc(), cart.getGtin(), total);
+			}
+		}			
 		
+		
+		
+		if (updated) {
+			return new ApiResponse("quantity updated");
+		}
 		cart.setStatus(1);
 		repo.save(cart);
 		return new ApiResponse("item added");

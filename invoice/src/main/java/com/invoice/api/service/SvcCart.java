@@ -11,5 +11,4 @@ public interface SvcCart {
 	public ApiResponse addToCart(Cart cart);
 	public ApiResponse removeFromCart(Integer cart_id);
 	public ApiResponse clearCart(String rfc);
-
 }

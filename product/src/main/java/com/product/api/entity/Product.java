@@ -79,6 +79,20 @@ public class Product {
 	private Category category;
 
 	/**
+	 * @return the product_id
+	 */
+	public Integer getProduct_id() {
+		return product_id;
+	}
+
+	/**
+	 * @param product_id the product_id to set
+	 */
+	public void setProduct_id(Integer product_id) {
+		this.product_id = product_id;
+	}
+
+	/**
 	 * @return the gtin
 	 */
 	public String getGtin() {
@@ -90,6 +104,20 @@ public class Product {
 	 */
 	public void setGtin(String gtin) {
 		this.gtin = gtin;
+	}
+
+	/**
+	 * @return the product
+	 */
+	public String getProduct() {
+		return product;
+	}
+
+	/**
+	 * @param product the product to set
+	 */
+	public void setProduct(String product) {
+		this.product = product;
 	}
 
 	/**
@@ -149,48 +177,6 @@ public class Product {
 	}
 
 	/**
-	 * @return the category
-	 */
-	public Category getCategory() {
-		return category;
-	}
-
-	/**
-	 * @param category the category to set
-	 */
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	/**
-	 * @return the product_id
-	 */
-	public Integer getProduct_id() {
-		return product_id;
-	}
-
-	/**
-	 * @param product_id the product_id to set
-	 */
-	public void setProduct_id(Integer product_id) {
-		this.product_id = product_id;
-	}
-
-	/**
-	 * @return the product
-	 */
-	public String getProduct() {
-		return product;
-	}
-
-	/**
-	 * @param product the product to set
-	 */
-	public void setProduct(String product) {
-		this.product = product;
-	}
-
-	/**
 	 * @return the status
 	 */
 	public Integer getStatus() {
@@ -204,12 +190,17 @@ public class Product {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return "Product [product_id=" + product_id + ", gtin=" + gtin + ", product=" + product + ", description="
-				+ description + ", price=" + price + ", stock=" + stock + ", category_id=" + category_id + ", status="
-				+ status + ", category=" + category + "]";
+	/**
+	 * @return the category
+	 */
+	public Category getCategory() {
+		return category;
 	}
-	
-	
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 }

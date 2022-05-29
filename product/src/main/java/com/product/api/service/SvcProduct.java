@@ -20,4 +20,5 @@ public interface SvcProduct {
 	public ApiResponse updateProduct(Integer product_id, Product product);
 	public ApiResponse deleteProduct(Integer product_id);
 	public ApiResponse updateProductCategory(Integer product_id, Integer category_id);
+	public ApiResponse updateProductStock(String gtin, Integer stock);
 }
