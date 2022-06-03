@@ -14,8 +14,25 @@ public class DtoProduct {
 	/* Atributo de clase que representa la cantidad en stock del producto */
 	private Integer stock;
 	
+	/* Atributo de clas que representa el precio del producto */
+	private float price;
+	
 	/* Atributo de clase que representa el valor de status */
 	
+	/**
+	 * @return the price
+	 */
+	public float getPrice() {
+		return price;
+	}
+
+	/**
+	 * @param price the price to set
+	 */
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
 	/**
 	 * @return the gtin
 	 */

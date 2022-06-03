@@ -26,7 +26,7 @@ public class Item {
 	@JsonProperty("invoice_id")
 	@Column(name = "invoice_id")
 	@NotNull(message="invoice id required")
-	private Integer id_invoice;
+	private Integer invoice_id;
 	
 	@JsonProperty("gtin")
 	@Column(name = "gtin")
@@ -64,6 +64,10 @@ public class Item {
 	@Min(value=0, message="status must be 0 or 1")
 	@Max(value=1, message="status must be 0 or 1")
 	private Integer status;
+	
+	public Item() {
+		this.status = 1;
+	}
 
 	public Integer getItem_id() {
 		return item_id;
@@ -74,11 +78,11 @@ public class Item {
 	}
 
 	public Integer getId_invoice() {
-		return id_invoice;
+		return invoice_id;
 	}
 
 	public void setId_invoice(Integer id_invoice) {
-		this.id_invoice = id_invoice;
+		this.invoice_id = id_invoice;
 	}
 
 	public String getGtin() {
