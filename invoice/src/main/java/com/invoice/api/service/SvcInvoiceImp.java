@@ -1,6 +1,7 @@
 package com.invoice.api.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,8 @@ public class SvcInvoiceImp implements SvcInvoice {
 		if (products == null || products.isEmpty()) {
 			throw new ApiException(HttpStatus.NOT_FOUND, "cart has no items");
 		}
-		Invoice factura = new Invoice();
-		//List<Item> invoices = new ArrayList();
+		
+		List<Item> invoices = new ArrayList<Item>();
 		for (Cart p: products) {
 			DtoProduct product = productClient.getProduct(p.getGtin()).getBody();
 			double unit_price = product.getPrice();
@@ -69,18 +70,17 @@ public class SvcInvoiceImp implements SvcInvoice {
 			i.setTaxes(taxes);
 			i.setTotal(total);
 			i.setUnit_price(unit_price);
-			i.setId_invoice(factura.getInvoice_id());
+			invoices.add(i);
 			productClient.updateProductStock(p.getGtin(), product.getStock()-p.getQuantity());
-			repoItem.save(i);
 		}
 		
-		List<Item> invoices = repoItem.getInvoiceItems(factura.getInvoice_id());
+		Invoice factura = new Invoice();
 		double total = 0;
 		double taxes = 0;
 		double subtotal = 0;
 		for (Item i: invoices) {
 			total = total + i.getTotal();
-			taxes = taxes + i.getTaxes();
+			taxes = taxes + i.getTotal();
 			subtotal = subtotal + i.getSubtotal();
 		}
 		LocalDateTime created_at = LocalDateTime.now();
@@ -92,8 +92,12 @@ public class SvcInvoiceImp implements SvcInvoice {
 		factura.setTaxes(taxes);
 		repo.save(factura);
 		
-		svc.clearCart(rfc);
+		for (Item i: invoices) {
+			i.setId_invoice(factura.getInvoice_id());
+			repoItem.save(i);
+		}
 		
+		svc.clearCart(rfc);
 		return new ApiResponse("invoice generated");
 	}
 

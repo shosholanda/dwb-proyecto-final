@@ -58,7 +58,7 @@ public class Invoice {
 	private Integer status;
 	
 	public Invoice() {
-		
+		this.status = 1;
 	}
 
 	public Integer getInvoice_id() {

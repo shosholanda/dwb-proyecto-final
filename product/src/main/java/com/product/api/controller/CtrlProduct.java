@@ -97,7 +97,7 @@ public class CtrlProduct {
 	 * Requerimiento 2.4. Actualizar el stock de productos.
 	 * *CHECK*
 	 */
-	@PutMapping("/{gtin}")
+	@PutMapping("/update/{gtin}")
 	public ResponseEntity<ApiResponse> updateProductStock(@PathVariable String gtin, @RequestBody Integer stock){
 		return new ResponseEntity<>(srv.updateProductStock(gtin, stock), HttpStatus.OK);
 	}
